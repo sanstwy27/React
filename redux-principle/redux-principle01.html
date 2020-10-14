@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>redux principle</title>
+</head>
+<body>
+    <div>
+        <button onclick="dispatch({type: 'sub', n: 2})">-</button>
+        <span id="countDisplay">10</span>
+        <button onclick="dispatch({type: 'add', n: 2})">+</button>
+    </div>
+    <script>
+        // func
+        const renderCount = (state) => {
+            countDisplay.innerHTML = state.count
+        }
+
+        const changeState = (action) => {
+            switch(action.type) {
+                case 'sub':
+                    countState.count -= action.n
+                    break;
+                case 'add':
+                    countState.count += action.n
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        const dispatch = (action) => {
+            changeState(action)
+            renderCount(countState)
+        }
+
+        // original
+        const countDisplay = document.querySelector('#countDisplay')
+        const countState = {
+            count: 5
+        }
+        renderCount(countState)
+    </script>
+</body>
+</html>
