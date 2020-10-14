@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>redux principle</title>
+</head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/redux/4.0.5/redux.min.js" integrity="sha512-P36ourTueX/PrXrD4Auc1kVLoTE7bkWrIrkaM0IG2X3Fd90LFgTRogpZzNBssay0XOXhrIgudf4wFeftdsPDiQ==" crossorigin="anonymous"></script>
+<body>
+    <div>
+        <button onclick="store.dispatch({type: 'sub', n: 2})">-</button>
+        <span id="countDisplay">10</span>
+        <button onclick="store.dispatch({type: 'add', n: 2})">+</button>
+    </div>
+    <script>
+        const changeState = (state, action) => {
+            if(!state) {
+                return countState
+            }
+            switch(action.type) {
+                case 'sub':
+                    return {
+                        ...state,
+                        count: state.count - action.n
+                    }
+                case 'add':
+                    return {
+                        ...state,
+                        count: state.count + action.n
+                    }
+                default:
+                    return state
+            }
+        }
+
+        const dispatch = (action) => {
+            changeState(action)
+            renderCount(countState)
+        }
+
+        const countDisplay = document.querySelector('#countDisplay')
+
+        const countState = {
+            count: 5
+        }
+
+        const store = Redux.createStore(changeState)
+
+        const renderCount = () => {
+            countDisplay.innerHTML = store.getState().count
+        }
+
+        renderCount()
+
+        store.subscribe(renderCount)
+
+    </script>
+</body>
+</html>
