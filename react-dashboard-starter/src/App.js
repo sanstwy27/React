@@ -1,14 +1,30 @@
-import React from 'react';
-import Button from '@material-ui/core/Button';
+import React, { Component } from 'react'
+import { Button, DatePicker } from 'antd';
+import './App.less';
 
-function App() {
-  return (
-    <div className="App">
-      <Button variant="contained" color="primary">
-        Hello World
-      </Button>
-    </div>
-  );
+const testHOC = (WrappedCompenent) => {
+  return class HOCCompenent extends Component {
+      render() {
+        return (
+          <>
+            <WrappedCompenent />
+            <div>HOCCompenent</div>
+          </>
+        )
+      }
+  }
+}
+
+@testHOC
+class App extends Component {
+  render() {
+    return (
+      <>
+        <Button type="primary">PRESS ME</Button>
+        <DatePicker placeholder="select date" />
+      </>
+    )
+  }
 }
 
 export default App;
