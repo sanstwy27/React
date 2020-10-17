@@ -1,14 +1,14 @@
 import React, { Component } from 'react'
 import { Route, Switch, Redirect } from 'react-router-dom'
 import { adminRoutes } from './routes'
-
+import { Frame } from './components'
 import './App.less';
+const menus = adminRoutes.filter(route => route.isNav === true)
 
 class App extends Component {
   render() {
     return (
-      <div>
-        <div>Common</div>
+      <Frame menus={menus}>
         <Switch>
           {
             adminRoutes.map(route => {
@@ -25,7 +25,7 @@ class App extends Component {
           <Redirect to={adminRoutes[0].pathname} from='/admin' exact />
           <Redirect to='/404' />
         </Switch>
-      </div>
+      </Frame>
     )
   }
 }

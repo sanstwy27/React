@@ -1,3 +1,11 @@
+import React from 'react'
+
+import { 
+    DashboardOutlined,
+    SettingOutlined,
+    UnorderedListOutlined
+} from '@ant-design/icons';
+
 import {
     Dashboard,
     Login,
@@ -17,15 +25,26 @@ export const mainRoutes = [{
 
 export const adminRoutes = [{
     pathname: '/admin/dashboard',
-    component: Dashboard
+    component: Dashboard,
+    title: 'Dashboard',
+    isNav: true,
+    icon: <DashboardOutlined />
 }, {
     pathname: '/admin/settings',
-    component: Settings
+    component: Settings,
+    title: 'Settings',
+    isNav: true,
+    icon: <SettingOutlined />
 }, {
     pathname: '/admin/article',
     component: ArticleList,
+    title: 'ArticleList',
+    isNav: true,
+    icon: <UnorderedListOutlined />,
     exact: true
 }, {
     pathname: '/admin/article/edit',
-    component: ArticleEdit
+    component: ArticleEdit,
+    title: 'ArticleEdit',
+    isNav: false
 }]
