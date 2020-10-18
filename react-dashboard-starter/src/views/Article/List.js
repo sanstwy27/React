@@ -3,6 +3,7 @@ import { Card, Button, Table, Tag } from 'antd'
 import moment from 'moment'
 import XLSX from 'xlsx'
 import { getArticles } from '../../requests'
+import { DeleteModal } from '../../components'
 
 const ButtonGroup = Button.Group
 
@@ -23,7 +24,8 @@ export default class ArticleList extends Component {
             total: 0,
             isLoading: false,
             offset: 0,
-            limited: 10
+            limited: 10,
+            deleteModalRecord: []
         }
     }
 
@@ -67,16 +69,30 @@ export default class ArticleList extends Component {
         columns.push({
             title: 'Actions',
             key: 'actions',
-            render: () => {
+            render: (text, record) => {
                 return (
                     <ButtonGroup>
                         <Button size="small" type="primary">Edit</Button>
-                        <Button size="small" type="danger">Delete</Button>
+                        <Button size="small" type="danger" onClick={this.setDeleteModalRecord.bind(this, record)}>Delete</Button>
                     </ButtonGroup>
                 )
             }
         })
         return columns
+    }
+
+    reload = () => {
+        this.setState({
+            offset: 0
+        }, () => {
+            this.getData()
+        })
+    }
+
+    setDeleteModalRecord = (record) => {
+        this.setState({
+            deleteModalRecord: record
+        })
     }
 
     getData = () => {
@@ -166,6 +182,7 @@ export default class ArticleList extends Component {
                         columns={this.state.columns}
                         loading={this.state.isLoading}
                         pagination={{
+                            current: (this.state.offset / this.state.limited) + 1,
                             total: this.state.total,
                             hideOnSinglePage: true,
                             showQuickJumper: true,
@@ -173,6 +190,10 @@ export default class ArticleList extends Component {
                             onChange: this.onPageChange,
                             onShowSizeChange: this.onShowSizeChange
                         }}
+                    />
+                    <DeleteModal
+                        reload={this.reload.bind(this)}
+                        deleteModalRecord={this.state.deleteModalRecord}
                     />
                 </Card>
             </div>
