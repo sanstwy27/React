@@ -30,12 +30,6 @@ export const adminRoutes = [{
     isNav: true,
     icon: <DashboardOutlined />
 }, {
-    pathname: '/admin/settings',
-    component: Settings,
-    title: 'Settings',
-    isNav: true,
-    icon: <SettingOutlined />
-}, {
     pathname: '/admin/article',
     component: ArticleList,
     title: 'ArticleList',
@@ -47,4 +41,10 @@ export const adminRoutes = [{
     component: ArticleEdit,
     title: 'ArticleEdit',
     isNav: false
+}, {
+    pathname: '/admin/settings',
+    component: Settings,
+    title: 'Settings',
+    isNav: true,
+    icon: <SettingOutlined />
 }]
