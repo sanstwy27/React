@@ -20,7 +20,9 @@ export default class ArticleList extends Component {
             dataSource: [],
             columns: [],
             total: 0,
-            isLoading: false
+            isLoading: false,
+            offset: 0,
+            limited: 10
         }
     }
 
@@ -80,7 +82,7 @@ export default class ArticleList extends Component {
         this.setState({
             isLoading: true
         })
-        getArticles()
+        getArticles(this.state.offset, this.state.limited)
             .then(resp => {
                 const columnKeys = Object.keys(resp.list[0])
                 const columns = this.createColumns(columnKeys)
@@ -99,6 +101,24 @@ export default class ArticleList extends Component {
                     isLoading: false
                 })
             })
+    }
+
+    onPageChange = (page, pageSize) => {
+        this.setState({
+            offset: pageSize * (page - 1),
+            limited: pageSize
+        }, () => {
+            this.getData()
+        })
+    }
+
+    onShowSizeChange = (current, size) => {
+        this.setState({
+            offset: 0,
+            limited: size
+        }, () => {
+            this.getData()
+        })
     }
 
     componentDidMount() {
@@ -120,7 +140,11 @@ export default class ArticleList extends Component {
                         loading={this.state.isLoading}
                         pagination={{
                             total: this.state.total,
-                            hideOnSinglePage: true
+                            hideOnSinglePage: true,
+                            showQuickJumper: true,
+                            showSizeChanger: true,
+                            onChange: this.onPageChange,
+                            onShowSizeChange: this.onShowSizeChange
                         }}
                     />;
                 </Card>

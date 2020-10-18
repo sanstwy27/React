@@ -24,7 +24,7 @@ service.interceptors.response.use((resp) => {
 })
 
 export const getArticles = (offset = 0, limited = 10) => {
-    return service.post('/v3/63187592-b128-4e05-96f6-70920bde02e6', {
+    return service.post('/v3/357240c9-c8f1-46e3-9a15-e33361c56ab6', {
         offset,
         limited
     })
