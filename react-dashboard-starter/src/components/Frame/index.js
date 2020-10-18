@@ -47,12 +47,11 @@ class Frame extends Component {
                         <Breadcrumb.Item>App</Breadcrumb.Item>
                         </Breadcrumb>
                         <Content
-                        className="site-layout-background"
-                        style={{
-                            padding: 24,
-                            margin: 0,
-                            minHeight: 280,
-                        }}
+                            className="site-layout-background"
+                            style={{
+                                background: '#fff',
+                                margin: 0
+                            }}
                         >
                         {this.props.children}
                         </Content>
