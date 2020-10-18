@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Card, Button, Table, Tag } from 'antd'
 import moment from 'moment'
+import XLSX from 'xlsx'
 import { getArticles } from '../../requests'
 
 const ButtonGroup = Button.Group
@@ -121,6 +122,32 @@ export default class ArticleList extends Component {
         })
     }
 
+    toExcel = () => {
+        const data = []
+        data.push([
+            titleDisplayMap.id,
+            titleDisplayMap.title,
+            titleDisplayMap.author,
+            titleDisplayMap.amount,
+            titleDisplayMap.createAt
+        ])
+        for(let i = 0; i < this.state.dataSource.length; i++) {
+            data.push([
+                this.state.dataSource[i].id,
+                this.state.dataSource[i].title,
+                this.state.dataSource[i].author,
+                this.state.dataSource[i].amount,
+                moment(this.state.dataSource[i].createAt).format('MM/DD/YYYY HH:mm:ss')
+            ])
+        }
+		/* convert state to workbook */
+		const ws = XLSX.utils.aoa_to_sheet(data);
+		const wb = XLSX.utils.book_new();
+		XLSX.utils.book_append_sheet(wb, ws, "SheetJS");
+		/* generate XLSX file and send to client */
+		XLSX.writeFile(wb, `sheetjs-${moment().format('YYYYMMDDHHmmss')}.xlsx`)
+    }
+
     componentDidMount() {
         this.getData()
     }
@@ -131,7 +158,7 @@ export default class ArticleList extends Component {
                 <Card 
                     title="Article List" 
                     bordered={false} 
-                    extra={<Button>Export EXCEL</Button>}
+                    extra={<Button onClick={this.toExcel}>Export EXCEL</Button>}
                 >
                     <Table 
                         rowKey={record => record.id}
@@ -146,7 +173,7 @@ export default class ArticleList extends Component {
                             onChange: this.onPageChange,
                             onShowSizeChange: this.onShowSizeChange
                         }}
-                    />;
+                    />
                 </Card>
             </div>
         )
