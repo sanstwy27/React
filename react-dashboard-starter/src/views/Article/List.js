@@ -3,7 +3,7 @@ import { Card, Button, Table, Tag } from 'antd'
 import moment from 'moment'
 import { getArticles } from '../../requests'
 
-window.moment = moment
+const ButtonGroup = Button.Group
 
 const titleDisplayMap = {
     id: 'ID',
@@ -19,12 +19,13 @@ export default class ArticleList extends Component {
         this.state = {
             dataSource: [],
             columns: [],
-            total: 0
+            total: 0,
+            isLoading: false
         }
     }
 
     createColumns = (columnKeys) => {
-        return columnKeys.map(item => {
+        const columns = columnKeys.map(item => {
             if(item === 'amount') {
                 /* render element color by amount */
                 return {
@@ -60,9 +61,25 @@ export default class ArticleList extends Component {
                 key: item,
             }
         })
+        columns.push({
+            title: 'Actions',
+            key: 'actions',
+            render: () => {
+                return (
+                    <ButtonGroup>
+                        <Button size="small" type="primary">Edit</Button>
+                        <Button size="small" type="danger">Delete</Button>
+                    </ButtonGroup>
+                )
+            }
+        })
+        return columns
     }
 
     getData = () => {
+        this.setState({
+            isLoading: true
+        })
         getArticles()
             .then(resp => {
                 const columnKeys = Object.keys(resp.list[0])
@@ -70,7 +87,16 @@ export default class ArticleList extends Component {
                 this.setState({
                     total: resp.total,
                     dataSource: resp.list,
+                    isLoading: false,
                     columns
+                })
+            })
+            .catch(err => {
+                // error handling
+            })
+            .finally(() => {
+                this.setState({
+                    isLoading: false
                 })
             })
     }
@@ -91,6 +117,7 @@ export default class ArticleList extends Component {
                         rowKey={record => record.id}
                         dataSource={this.state.dataSource} 
                         columns={this.state.columns}
+                        loading={this.state.isLoading}
                         pagination={{
                             total: this.state.total,
                             hideOnSinglePage: true
