@@ -1,11 +1,22 @@
 import React, { Component } from 'react'
+import {
+    Card,
+    Button
+} from 'antd'
+import { withRouter } from "react-router-dom";
 
-export default class Edit extends Component {
+class Edit extends Component {
     render() {
         return (
-            <div>
-                Article Edit
-            </div>
+            <Card 
+                title="Article Edit" 
+                bordered={false} 
+                extra={<Button>Cancel</Button>}
+            >
+                FORM
+            </Card>
         )
     }
 }
+
+export default withRouter(Edit)

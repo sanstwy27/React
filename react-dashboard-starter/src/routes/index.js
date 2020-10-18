@@ -32,7 +32,7 @@ export const adminRoutes = [{
 }, {
     pathname: '/admin/article',
     component: ArticleList,
-    title: 'ArticleList',
+    title: 'Articles',
     isNav: true,
     icon: <UnorderedListOutlined />,
     exact: true

@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
-import { Card, Button, Table, Tag } from 'antd'
+import { Card, Button, Table, Tag, Tooltip } from 'antd'
 import moment from 'moment'
 import XLSX from 'xlsx'
+import { withRouter } from 'react-router-dom';
 import { getArticles } from '../../requests'
 import { DeleteModal } from '../../components'
 
@@ -15,7 +16,7 @@ const titleDisplayMap = {
     amount: 'Amount'
 }
 
-export default class ArticleList extends Component {
+class ArticleList extends Component {
     constructor() {
         super()
         this.state = {
@@ -38,7 +39,11 @@ export default class ArticleList extends Component {
                     key: item,
                     render: (text, record) => {
                         const { amount } = record
-                        return <Tag color={amount > 200 ? "red" : "green"}>{record.amount}</Tag>
+                        return (
+                            <Tooltip title={amount > 200 ? "greater than 200" : "less than or equal to 200"}>
+                                <Tag color={amount > 200 ? "red" : "green"}>{record.amount}</Tag>
+                            </Tooltip>
+                        )
                     }
                 }
                 /* render element color by role */
@@ -72,13 +77,22 @@ export default class ArticleList extends Component {
             render: (text, record) => {
                 return (
                     <ButtonGroup>
-                        <Button size="small" type="primary">Edit</Button>
+                        <Button size="small" type="primary" onClick={this.toEdit.bind(this, record)}>Edit</Button>
                         <Button size="small" type="danger" onClick={this.setDeleteModalRecord.bind(this, record)}>Delete</Button>
                     </ButtonGroup>
                 )
             }
         })
         return columns
+    }
+
+    toEdit = (record) => {
+        this.props.history.push({
+            pathname: `/admin/article/edit/${record.id}`,
+            state: {
+                record
+            }
+        })
     }
 
     reload = () => {
@@ -170,33 +184,33 @@ export default class ArticleList extends Component {
 
     render() {
         return (
-            <div>
-                <Card 
-                    title="Article List" 
-                    bordered={false} 
-                    extra={<Button onClick={this.toExcel}>Export EXCEL</Button>}
-                >
-                    <Table 
-                        rowKey={record => record.id}
-                        dataSource={this.state.dataSource} 
-                        columns={this.state.columns}
-                        loading={this.state.isLoading}
-                        pagination={{
-                            current: (this.state.offset / this.state.limited) + 1,
-                            total: this.state.total,
-                            hideOnSinglePage: true,
-                            showQuickJumper: true,
-                            showSizeChanger: true,
-                            onChange: this.onPageChange,
-                            onShowSizeChange: this.onShowSizeChange
-                        }}
-                    />
-                    <DeleteModal
-                        reload={this.reload.bind(this)}
-                        deleteModalRecord={this.state.deleteModalRecord}
-                    />
-                </Card>
-            </div>
+            <Card 
+                title="Article List" 
+                bordered={false} 
+                extra={<Button onClick={this.toExcel}>Export EXCEL</Button>}
+            >
+                <Table 
+                    rowKey={record => record.id}
+                    dataSource={this.state.dataSource} 
+                    columns={this.state.columns}
+                    loading={this.state.isLoading}
+                    pagination={{
+                        current: (this.state.offset / this.state.limited) + 1,
+                        total: this.state.total,
+                        hideOnSinglePage: true,
+                        showQuickJumper: true,
+                        showSizeChanger: true,
+                        onChange: this.onPageChange,
+                        onShowSizeChange: this.onShowSizeChange
+                    }}
+                />
+                <DeleteModal
+                    reload={this.reload.bind(this)}
+                    deleteModalRecord={this.state.deleteModalRecord}
+                />
+            </Card>
         )
     }
 }
+
+export default withRouter(ArticleList);
