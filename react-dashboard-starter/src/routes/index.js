@@ -37,7 +37,7 @@ export const adminRoutes = [{
     icon: <UnorderedListOutlined />,
     exact: true
 }, {
-    pathname: '/admin/article/edit',
+    pathname: '/admin/article/edit/:id',
     component: ArticleEdit,
     title: 'ArticleEdit',
     isNav: false

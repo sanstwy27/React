@@ -37,3 +37,18 @@ export const deleteArticleById = (id) => {
         id
     })
 }
+
+// Get Article by ID
+export const getArticleById = (id) => {
+    return service.post(`/v3/1eca0c77-bd4e-4a2e-b337-7fb13035d163`, {
+        id
+    })
+}
+
+// Save Article
+export const saveArticle = (id, data) => {
+    return service.post(`/v3/a207eb9d-f4f3-4725-8f65-82c8c0d3473b`, {
+        id,
+        data
+    })
+}

@@ -5,11 +5,16 @@ import {
     Button,
     Form,
     Input,
-    DatePicker
+    DatePicker,
+    Spin,
+    message
 } from 'antd'
+import { EditorState, ContentState, convertFromHTML, convertToRaw } from 'draft-js'
 import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import draftToHtml from 'draftjs-to-html';
+import { getArticleById, saveArticle } from '../../requests';
+import moment from 'moment'
 
 const formItemLayout = {
     labelCol: { span: 2 },
@@ -22,121 +27,138 @@ const formTailLayout = {
 };
 
 class Edit extends Component {
+    formRef = React.createRef();
+
     constructor(props) {
         super(props);
         this.state = {
-            contentState : null,
-            contentValid: null
+            id: this.props.match.params.id,
+            editorState: EditorState.createEmpty(),
+            isLoading: false
         };
     }
-    
-    checkContent = (rule, value) => {
-        if (!this.emptyContent()) {
-            this.setState({
-                contentValid: true
-            })
-            return Promise.resolve();
-        }
-        
-        this.setState({
-            contentValid: false
-        })
-        return Promise.reject('Content is required!');
-    };
 
-    emptyContent() {
-        if (draftToHtml(this.state.contentState).length > 0) {
-            return false;
-        }
-        return true;
+    componentDidMount() {
+        this.setState({
+            isLoading: true
+        })
+        getArticleById(this.props.match.params.id)
+            .then(resp => {
+                const { id, content, ...data } = resp;
+                data.createAt = moment(data.createAt)
+                this.formRef.current.setFieldsValue(data);
+                this.setState({
+                    editorState: EditorState.createWithContent(
+                                    ContentState.createFromBlockArray(
+                                        convertFromHTML(content)
+                                ))
+                })
+            })
+            .finally(() => {
+                this.setState({
+                    isLoading: false
+                })
+            })
     }
 
-    onContentStateChange = (contentState) => {
+    onEditorStateChange = (editorState) => {
         this.setState({
-            contentState: draftToHtml(contentState).trim() === "<p></p>" ? null : contentState,
+            editorState,
         });
-        // console.log('as HTML:', draftToHtml(contentState));
     };
 
     onFinish = values => {
-        console.log('Received values of form: ', values);
+        this.setState({
+            isLoading: true
+        })
+        const data = Object.assign({}, values, {
+            createAt: moment(values.createAt).valueOf(),
+            content: draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()))
+        })
+        saveArticle(this.state.id, data)
+            .then(resp => {
+                message.success(resp.msg)
+            })
+            .finally(() => {
+                this.setState({
+                    isLoading: false
+                })
+                this.props.history.push('/admin/article')
+            })
     };
 
     render() {
-        const { contentState, contentValid } = this.state
         return (
-            <Card 
-                title="Article Edit" 
-                bordered={false} 
-                extra={<Button>Cancel</Button>}
-            >
-                <Form
-                    name="basic"
-                    initialValues={{ remember: true }}
-                    onFinish={this.onFinish}
+            <Spin spinning={this.state.isLoading}>
+                <Card 
+                    title="Article Edit" 
+                    bordered={false} 
+                    extra={<Button onClick={this.props.history.goBack}>Cancel</Button>}
                 >
-                    <Form.Item
-                        {...formItemLayout}
-                        label="Title"
-                        name="title"
-                        rules={[{ required: true, message: 'Title is required!' }]}
+                    <Form
+                        ref={this.formRef}
+                        name="basic"
+                        initialValues={{ remember: true }}
+                        onFinish={this.onFinish}
                     >
-                        <Input placeholder="Title" />
-                    </Form.Item>
-                    <Form.Item
-                        {...formItemLayout}
-                        label="Author"
-                        name="author"
-                        rules={[{ required: true, message: 'Author is required!' }]}
-                    >
-                        <Input placeholder="Author" />
-                    </Form.Item>
-                    <Form.Item
-                        {...formItemLayout}
-                        label="Amount"
-                        name="amount"
-                        rules={[{ required: true, message: 'Amount is required!' }]}
-                    >
-                        <Input placeholder="0" />
-                    </Form.Item>
-                    <Form.Item
-                        {...formItemLayout}
-                        label="CreateAt"
-                        name="createat"
-                        rules={[{ required: true, message: 'CreateAt is required!' }]}
-                    >
-                        <DatePicker showTime />
-                    </Form.Item>
-                    <Form.Item
-                        {...formItemLayout}
-                        label="Content"
-                        name="content"
-                        rules={[
-                            // { required: true, message: 'Content is required!' },
-                            { validator: this.checkContent }
-                        ]}
-                    >
-                        <Editor
-                            wrapperClassName="demo-wrapper"
-                            editorClassName="demo-editor"
-                            editorContent={contentState}
-                            onContentStateChange={this.onContentStateChange}
-                            editorStyle={{
-                                border: `1px solid ${contentValid || contentValid== null ? "" : "#FF0000"}`,
-                                minHeight: "10em",
-                                lineHeight: '75%'
-                            }}
-                        />
-                    </Form.Item>
-                    <Form.Item
-                        {...formTailLayout}
-                    >
-                        <Button type="primary" htmlType="submit">
-                            Save
-                        </Button>
-                    </Form.Item>
-                </Form>
-            </Card>
+                        <Form.Item
+                            {...formItemLayout}
+                            label="Title"
+                            name="title"
+                            rules={[{ required: true, message: 'Title is required!' }]}
+                        >
+                            <Input placeholder="Title" />
+                        </Form.Item>
+                        <Form.Item
+                            {...formItemLayout}
+                            label="Author"
+                            name="author"
+                            rules={[{ required: true, message: 'Author is required!' }]}
+                        >
+                            <Input placeholder="Author" />
+                        </Form.Item>
+                        <Form.Item
+                            {...formItemLayout}
+                            label="Amount"
+                            name="amount"
+                            rules={[{ required: true, message: 'Amount is required!' }]}
+                        >
+                            <Input placeholder="0" />
+                        </Form.Item>
+                        <Form.Item
+                            {...formItemLayout}
+                            label="CreateAt"
+                            name="createAt"
+                            rules={[{ required: true, message: 'CreateAt is required!' }]}
+                        >
+                            <DatePicker showTime />
+                        </Form.Item>
+                        <Form.Item
+                            {...formItemLayout}
+                            label="Content"
+                            name="content"
+                        >
+                            <Editor
+                                wrapperClassName="demo-wrapper"
+                                editorClassName="demo-editor"
+                                editorState={this.state.editorState}
+                                onEditorStateChange={this.onEditorStateChange}
+                                editorStyle={{
+                                    border: `1px solid`,
+                                    minHeight: "10em"
+                                }}
+                            />
+                        </Form.Item>
+                        <Form.Item
+                            {...formTailLayout}
+                        >
+                            <Button type="primary" htmlType="submit">
+                                Save
+                            </Button>
+                        </Form.Item>
+                    </Form>
+                </Card>
+            </Spin>
         )
     }
 }
