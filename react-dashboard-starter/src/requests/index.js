@@ -52,3 +52,8 @@ export const saveArticle = (id, data) => {
         data
     })
 }
+
+// Get Article View Count
+export const getArticleCount = () => {
+    return service.post(`/v3/7467bdf1-922e-4a7c-a1a0-b826f0c70c4b`)
+}
