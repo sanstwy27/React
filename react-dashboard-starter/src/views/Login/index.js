@@ -1,6 +1,14 @@
 import React, { Component } from 'react'
 import { Form, Input, Button, Checkbox, Card } from 'antd';
+import { connect } from 'react-redux'
+import { login } from '../../actions/user'
+import { Redirect } from 'react-router-dom'
 import './login.less'
+
+const mapState = state => ({
+    isLogin: state.user.isLogin,
+    isLoading: state.user.isLoading
+})
 
 const layout = {
     labelCol: { span: 4 },
@@ -11,18 +19,24 @@ const tailLayout = {
     wrapperCol: { offset: 4, span: 16 },
 };
 
-export default class Login extends Component {
+@connect(mapState, { login })
+class Login extends Component {
 
     onFinish = values => {
-        console.log('Success:', values);
+        // console.log('Success:', values);
+        this.props.login(values)
     };
     
     onFinishFailed = errorInfo => {
-        console.log('Failed:', errorInfo);
+        // console.log('Failed:', errorInfo);
     };
 
     render() {
         return (
+            this.props.isLogin
+            ?
+            <Redirect to="/admin" />
+            :
             <Card title="Login" className="sans-login-wrapper">
                 <Form
                     {...layout}
@@ -36,7 +50,7 @@ export default class Login extends Component {
                         name="username"
                         rules={[{ required: true, message: 'Please input your username!' }]}
                     >
-                        <Input />
+                        <Input disabled={this.props.isLoading}/>
                     </Form.Item>
             
                     <Form.Item
@@ -44,15 +58,15 @@ export default class Login extends Component {
                         name="password"
                         rules={[{ required: true, message: 'Please input your password!' }]}
                     >
-                        <Input.Password />
+                        <Input.Password disabled={this.props.isLoading} />
                     </Form.Item>
             
                     <Form.Item {...tailLayout} name="remember" valuePropName="checked">
-                        <Checkbox>Remember me</Checkbox>
+                        <Checkbox disabled={this.props.isLoading}>Remember me</Checkbox>
                     </Form.Item>
             
                     <Form.Item {...tailLayout}>
-                        <Button type="primary" htmlType="submit">
+                        <Button type="primary" htmlType="submit" loading={this.props.isLoading}>
                             Submit
                         </Button>
                     </Form.Item>
@@ -61,3 +75,5 @@ export default class Login extends Component {
         )
     }
 }
+
+export default Login

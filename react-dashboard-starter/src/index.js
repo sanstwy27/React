@@ -11,9 +11,7 @@ render (
   <Provider store={store}>
     <Router>
       <Switch>
-        <Route path="/admin" render={(routeProps) => {
-          return <App {...routeProps} />
-        }} />
+        <Route path="/admin" component={App} />
         {
           mainRoutes.map(route => {
             return <Route key={route.pathname} path={route.pathname} component={route.component} />

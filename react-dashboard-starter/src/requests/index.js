@@ -7,6 +7,11 @@ const service = axios.create({
     baseURL: isDev ? 'https://run.mocky.io' : ''
 })
 
+// without interceptors
+const serviceLogin = axios.create({
+    baseURL: isDev ? 'https://run.mocky.io' : ''
+})
+
 service.interceptors.request.use((config) => {
     //**** can add token here
     // config.data = Object.assign({}, config.data, { 
@@ -61,4 +66,11 @@ export const getArticleCount = () => {
 // Get Notifications
 export const getNotifications = () => {
     return service.post(`/v3/719b88cb-99af-4d0e-9d0e-bb7fe0315abe`)
+}
+
+// Login
+export const loginRequest = (userInfo) => {
+    return serviceLogin.post(`/v3/2a617cef-42e1-4d66-936d-46baeb98bf74`, {
+        userInfo
+    })
 }
