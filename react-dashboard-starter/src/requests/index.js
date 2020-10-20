@@ -57,3 +57,8 @@ export const saveArticle = (id, data) => {
 export const getArticleCount = () => {
     return service.post(`/v3/7467bdf1-922e-4a7c-a1a0-b826f0c70c4b`)
 }
+
+// Get Notifications
+export const getNotifications = () => {
+    return service.post(`/v3/719b88cb-99af-4d0e-9d0e-bb7fe0315abe`)
+}

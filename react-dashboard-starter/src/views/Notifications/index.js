@@ -1,4 +1,4 @@
-import { Button } from 'antd'
+import { Button, Spin } from 'antd'
 import React, { Component } from 'react'
 import { 
     Card,
@@ -6,44 +6,62 @@ import {
     Avatar,
     Badge
 } from 'antd'
+import { connect } from 'react-redux'
+import { markNotificationAsReadById, markAllNotificationsAsRead } from '../../actions/notifications'
 
-const data = [
-    {
-      title: 'Ant Design Title 1',
-    },
-    {
-      title: 'Ant Design Title 2',
-    },
-    {
-      title: 'Ant Design Title 3',
-    },
-    {
-      title: 'Ant Design Title 4',
-    },
-];
+const mapState = state => {
+    const {
+        list,
+        isLoading
+    } = state.notifications
+    return {
+        list,
+        isLoading
+    }
+}
 
-export default class Notifications extends Component {
+@connect(mapState, { markNotificationAsReadById, markAllNotificationsAsRead })
+class Notifications extends Component {
     render() {
         return (
-            <Card 
-                title="Notifications" 
-                bordered={false} 
-                extra={<Button>Mark all as read</Button>}
-            >
-                <List
-                    itemLayout="horizontal"
-                    dataSource={data}
-                    renderItem={item => (
-                    <List.Item extra={<Button>Mark as read</Button>}>
-                        <List.Item.Meta
-                        avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
-                        title={<Badge dot>{item.title}</Badge>}
-                        description="Ant Design, a design language for background applications, is refined by Ant UED Team"
-                        />
-                    </List.Item>
-                    )}
-                />
-            </Card>
+            <Spin spinning={this.props.isLoading}>
+                <Card 
+                    title="Notifications" 
+                    bordered={false} 
+                    extra={
+                        <Button
+                            disabled={this.props.list.every(item=> item.hasRead === true)}
+                            onClick={this.props.markAllNotificationsAsRead.bind(this)}
+                        >
+                            Mark all as read
+                        </Button>}
+                >
+                    <List
+                        itemLayout="horizontal"
+                        dataSource={this.props.list}
+                        renderItem={item => (
+                        <List.Item extra={
+                                item.hasRead
+                                ?
+                                null
+                                :
+                                <Button
+                                    onClick={this.props.markNotificationAsReadById.bind(this, item.id)}
+                                >
+                                    Mark as read
+                                </Button>}>
+                            <List.Item.Meta
+                            avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
+                            title={<Badge dot={!item.hasRead}>{item.title}</Badge>}
+                            description={item.desc}
+                            />
+                        </List.Item>
+                        )}
+                    />
+                </Card>
+            </Spin>
         )
     }
 }
+
+export default Notifications
