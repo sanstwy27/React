@@ -1,14 +1,39 @@
 .sans-header {
-    padding: 0 16px;
+    padding: 10 16px;
     background-color: #fff;
     border-bottom: 1px solid #dedede;
-    .sans-logo {
-        height: 48px;
-        margin-left: -30px;
-        img {
-            height: 100%;
+    display: flex;
+    // align-content: space-between;
+
+    .sans-header-left {
+        display: flex;
+
+        div {
+            flex: 1;
+
+            .sans-logo {
+                height: 48px;
+                margin-left: -30px;
+                img {
+                    max-height: 100%;
+                }
+            };
+
+            .menu {
+                background-color: transparent;
+            }
         }
-    }
+    };
+    
+    .sans-header-right {
+        display: flex;
+        flex: 1;
+        flex-direction: row-reverse;
+
+        .dropmenu > div {
+            padding: 0 5px 0 0;
+        }
+    };
 }
 
 .site-layout-background {

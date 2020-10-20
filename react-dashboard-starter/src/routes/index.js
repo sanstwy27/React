@@ -12,7 +12,8 @@ import {
     NotFound,
     Settings,
     ArticleEdit,
-    ArticleList
+    ArticleList,
+    Notifications
 } from '../views'
 
 export const mainRoutes = [{
@@ -46,5 +47,11 @@ export const adminRoutes = [{
     component: Settings,
     title: 'Settings',
     isNav: true,
+    icon: <SettingOutlined />
+}, {
+    pathname: '/admin/notifications',
+    component: Notifications,
+    title: 'Notifications',
+    isNav: false,
     icon: <SettingOutlined />
 }]
