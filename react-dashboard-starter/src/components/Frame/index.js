@@ -5,6 +5,7 @@ import './frame.less'
 import logo from './logo.png'
 import { connect } from 'react-redux'
 import { getNotificationsList } from '../../actions/notifications'
+import { logout } from '../../actions/user'
 
 import { DownOutlined, UserOutlined } from '@ant-design/icons';
 import { MailOutlined, AppstoreOutlined, SettingOutlined } from '@ant-design/icons';
@@ -14,11 +15,13 @@ const { Header, Content, Sider } = Layout;
 
 const mapState = state => {
     return {
-        notificationsCount: state.notifications.list.filter(item => item.hasRead === false).length
+        notificationsCount: state.notifications.list.filter(item => item.hasRead === false).length,
+        avatar: state.user.avatar,
+        displayName: state.user.displayName
     }
 }
 
-@connect(mapState, { getNotificationsList })
+@connect(mapState, { getNotificationsList, logout })
 @withRouter
 class Frame extends Component {
     componentDidMount() {
@@ -26,7 +29,11 @@ class Frame extends Component {
     }
 
     onDropdownClick = ({ key }) => {
-        this.props.history.push(key)
+        if(key === '/login') {
+            this.props.logout()
+        } else {
+            this.props.history.push(key)
+        }
     }
 
     renderDropdown = () => (
@@ -101,10 +108,10 @@ class Frame extends Component {
                         <Dropdown overlay={this.renderDropdown()} placement="bottomRight">
                             <div className="dropmenu" style={{display: 'flex'}}>
                                 <div>
-                                    <Avatar style={{ backgroundColor: '#d63d78' }} icon={<UserOutlined />} />
+                                    <Avatar style={{ backgroundColor: '#d63d78' }} icon={<UserOutlined />} src={ this.props.avatar } />
                                 </div>
                                 <div>
-                                    Welcome, Alice
+                                    Welcome, { this.props.displayName } !
                                 </div>
                                 <div>
                                     <Badge count={this.props.notificationsCount} offset={[-20, -8]}>
