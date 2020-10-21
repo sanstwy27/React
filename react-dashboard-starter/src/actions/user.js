@@ -35,7 +35,7 @@ export const logout = () => {
 export const login = (loginInfo) => {
     return dispatch => {
         dispatch(startLogin())
-        loginRequest(loginInfo, "003")
+        loginRequest(loginInfo)
             .then(resp => {
                 if(resp.data.code === 200) {
                     const {

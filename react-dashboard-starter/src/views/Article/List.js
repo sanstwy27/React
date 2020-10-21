@@ -109,6 +109,14 @@ class ArticleList extends Component {
         })
     }
 
+    setData = (state) => {
+        if(this.updater.isMounted(this)) {
+            this.setState({
+                ...state
+            })
+        }
+    }
+
     getData = () => {
         this.setState({
             isLoading: true
@@ -117,10 +125,9 @@ class ArticleList extends Component {
             .then(resp => {
                 const columnKeys = Object.keys(resp.list[0])
                 const columns = this.createColumns(columnKeys)
-                this.setState({
+                this.setData({
                     total: resp.total,
                     dataSource: resp.list,
-                    isLoading: false,
                     columns
                 })
             })
@@ -128,7 +135,7 @@ class ArticleList extends Component {
                 // error handling
             })
             .finally(() => {
-                this.setState({
+                this.setData({
                     isLoading: false
                 })
             })
@@ -187,7 +194,7 @@ class ArticleList extends Component {
             <Card 
                 title="Article List" 
                 bordered={false} 
-                extra={<Button onClick={this.toExcel}>Export EXCEL</Button>}
+                extra={<Button onClick={this.toExcel} disabled={this.state.isLoading}>Export EXCEL</Button>}
             >
                 <Table 
                     rowKey={record => record.id}
