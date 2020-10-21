@@ -69,8 +69,15 @@ export const getNotifications = () => {
 }
 
 // Login
-export const loginRequest = (userInfo) => {
-    return serviceLogin.post(`/v3/2a617cef-42e1-4d66-936d-46baeb98bf74`, {
-        userInfo
-    })
+export const loginRequest = (userInfo, role = "001") => {
+    // role for test 
+    if(role === "001") {
+        return serviceLogin.post(`/v3/76a0056d-106e-4441-a7b4-60e0e32cdc9a`, {
+            userInfo
+        })
+    } else {
+        return serviceLogin.post(`/v3/eb1bb6c1-708c-4211-80a7-c606f6e424bd`, {
+            userInfo
+        })
+    }
 }

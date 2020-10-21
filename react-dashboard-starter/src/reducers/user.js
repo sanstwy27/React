@@ -27,8 +27,8 @@ export default (state = initState, action) => {
                 id: '',
                 avatar: '',
                 displayName: '',
-                role: '',
-                authToken: ''
+                authToken: '',
+                role: ''
             }
         default:
             return state

@@ -13,7 +13,8 @@ import {
     Settings,
     ArticleEdit,
     ArticleList,
-    Notifications
+    Notifications,
+    NoAuth
 } from '../views'
 
 export const mainRoutes = [{
@@ -29,29 +30,41 @@ export const adminRoutes = [{
     component: Dashboard,
     title: 'Dashboard',
     isNav: true,
-    icon: <DashboardOutlined />
+    icon: <DashboardOutlined />,
+    roles: ['001', '002', '003']
 }, {
     pathname: '/admin/article',
     component: ArticleList,
     title: 'Articles',
     isNav: true,
     icon: <UnorderedListOutlined />,
-    exact: true
+    exact: true,
+    roles: ['001', '002']
 }, {
     pathname: '/admin/article/edit/:id',
     component: ArticleEdit,
     title: 'ArticleEdit',
-    isNav: false
+    isNav: false,
+    roles: ['001', '002']
 }, {
     pathname: '/admin/settings',
     component: Settings,
     title: 'Settings',
     isNav: true,
-    icon: <SettingOutlined />
+    icon: <SettingOutlined />,
+    roles: ['001']
+}, {
+    pathname: '/admin/noauth',
+    component: NoAuth,
+    title: 'NoAuth',
+    isNav: false,
+    icon: <SettingOutlined />,
+    roles: ['001', '002', '003']
 }, {
     pathname: '/admin/notifications',
     component: Notifications,
     title: 'Notifications',
     isNav: false,
-    icon: <SettingOutlined />
+    icon: <SettingOutlined />,
+    roles: ['001', '002', '003']
 }]
