@@ -69,9 +69,9 @@ export const getNotifications = () => {
 }
 
 // Login
-export const loginRequest = (userInfo, role = "001") => {
+export const loginRequest = (userInfo) => {
     // role for test 
-    if(role === "001") {
+    if(userInfo.username === "001") {
         return serviceLogin.post(`/v3/76a0056d-106e-4441-a7b4-60e0e32cdc9a`, {
             userInfo
         })

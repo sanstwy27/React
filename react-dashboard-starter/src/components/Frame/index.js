@@ -43,8 +43,8 @@ class Frame extends Component {
                 Notifications
             </Badge>
           </Menu.Item>
-          <Menu.Item key="/admin/settings">
-            Settings
+          <Menu.Item key="/admin/profile">
+            Profile
           </Menu.Item>
           <Menu.Item key="/login">
             Logout

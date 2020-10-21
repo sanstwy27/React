@@ -14,7 +14,8 @@ import {
     ArticleEdit,
     ArticleList,
     Notifications,
-    NoAuth
+    NoAuth,
+    Profile
 } from '../views'
 
 export const mainRoutes = [{
@@ -64,6 +65,13 @@ export const adminRoutes = [{
     pathname: '/admin/notifications',
     component: Notifications,
     title: 'Notifications',
+    isNav: false,
+    icon: <SettingOutlined />,
+    roles: ['001', '002', '003']
+}, {
+    pathname: '/admin/profile',
+    component: Profile,
+    title: 'Profile',
     isNav: false,
     icon: <SettingOutlined />,
     roles: ['001', '002', '003']
